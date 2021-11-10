@@ -24,7 +24,7 @@
 <meta name="author" content="胡伟武 汪文祥 苏孟豪 张福新 王焕东 章隆兵 肖俊华 刘 苏 陈新科 吴瑞阳 李晓钰 高燕萍" />
 
 
-<meta name="date" content="2021-11-06" />
+<meta name="date" content="2021-11-10" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -1152,7 +1152,22 @@ lb  $6, 0x0($src0)
 <span id="cb62-39"><a href="并行编程基础.html#cb62-39" aria-hidden="true" tabindex="-1"></a>                C[i*n+j]=<span class="dv">0</span>;</span>
 <span id="cb62-40"><a href="并行编程基础.html#cb62-40" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span>(k=<span class="dv">0</span>;k&lt;n;k++)</span>
 <span id="cb62-41"><a href="并行编程基础.html#cb62-41" aria-hidden="true" tabindex="-1"></a>                    C[i*n+j]+=A[i*n+k]*B[k*n+j];</span>
-<span id="cb62-42"><a href="并行编程基础.html#cb62-42" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb62-42"><a href="并行编程基础.html#cb62-42" aria-hidden="true" tabindex="-1"></a>            }</span>
+<span id="cb62-43"><a href="并行编程基础.html#cb62-43" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb62-44"><a href="并行编程基础.html#cb62-44" aria-hidden="true" tabindex="-1"></a>        <span class="co">//其他进程接收数据，计算结果，发送给主进程</span></span>
+<span id="cb62-45"><a href="并行编程基础.html#cb62-45" aria-hidden="true" tabindex="-1"></a>        MPI_Recv(B,n*n,MPI_DOUBLE,<span class="dv">0</span>,<span class="dv">0</span>,MPI_COMM_WORLD,&amp;status);</span>
+<span id="cb62-46"><a href="并行编程基础.html#cb62-46" aria-hidden="true" tabindex="-1"></a>        MPI_Recv(A+(ID-<span class="dv">1</span>)*line*n,line*n,MPI_DOUBLE,<span class="dv">0</span>,<span class="dv">1</span>,MPI_COMM_WORLD,&amp;status);</span>
+<span id="cb62-47"><a href="并行编程基础.html#cb62-47" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span>(i=(ID-<span class="dv">1</span>)*line;i&lt;ID*line;i++)</span>
+<span id="cb62-48"><a href="并行编程基础.html#cb62-48" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span>(j=<span class="dv">0</span>;j&lt;n;j++) {</span>
+<span id="cb62-49"><a href="并行编程基础.html#cb62-49" aria-hidden="true" tabindex="-1"></a>                C[i*n+j]=<span class="dv">0</span>;</span>
+<span id="cb62-50"><a href="并行编程基础.html#cb62-50" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span>(k=<span class="dv">0</span>;k&lt;n;k++)</span>
+<span id="cb62-51"><a href="并行编程基础.html#cb62-51" aria-hidden="true" tabindex="-1"></a>                    C[i*n+j]+=A[i*n+k]*B[k*n+j];</span>
+<span id="cb62-52"><a href="并行编程基础.html#cb62-52" aria-hidden="true" tabindex="-1"></a>            }</span>
+<span id="cb62-53"><a href="并行编程基础.html#cb62-53" aria-hidden="true" tabindex="-1"></a>        MPI_SEND(C+(num_procs-<span class="dv">1</span>)*line*n,line*n,MPI_DOUBLE,<span class="dv">0</span>,<span class="dv">2</span>,MPI_COMM_WORLD);</span>
+<span id="cb62-54"><a href="并行编程基础.html#cb62-54" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb62-55"><a href="并行编程基础.html#cb62-55" aria-hidden="true" tabindex="-1"></a>    MPI_Finalize();</span>
+<span id="cb62-56"><a href="并行编程基础.html#cb62-56" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span>;</span>
+<span id="cb62-57"><a href="并行编程基础.html#cb62-57" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 </div>
 <div id="习题-9" class="section level2" number="10.4">
